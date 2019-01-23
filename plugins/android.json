@@ -1,0 +1,30 @@
+{
+  "prepare_queue": {
+    "installed": [],
+    "uninstalled": []
+  },
+  "config_munge": {
+    "files": {}
+  },
+  "installed_plugins": {
+    "cordova-plugin-browsertab": {
+      "PACKAGE_NAME": "com.example.tutorial"
+    },
+    "cordova-plugin-buildinfo": {
+      "PACKAGE_NAME": "com.example.tutorial"
+    },
+    "cordova-plugin-inappbrowser": {
+      "PACKAGE_NAME": "com.example.tutorial"
+    },
+    "cordova-plugin-network-information": {
+      "PACKAGE_NAME": "com.example.tutorial"
+    },
+    "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "com.example.tutorial"
+    },
+    "cordova-universal-links-plugin": {
+      "PACKAGE_NAME": "com.example.tutorial"
+    }
+  },
+  "dependent_plugins": {}
+}
