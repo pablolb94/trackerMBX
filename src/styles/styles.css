@@ -5,10 +5,21 @@ body{
 }
 
 .LoadingDiv{
+    position: fixed;
+    top:0;
+    background: #FF512F;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #F09819, #FF512F);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #F09819, #FF512F);
     font-family: 'Oswald', sans-serif !important;
     width: 100%;
+    height: 100%;
     text-align: center;
     padding: 50px;
+}
+
+.LoadingDiv img{
+    margin-top: 50%;
+    width: 100%;
 }
 
 .contenedor{
@@ -23,12 +34,14 @@ body{
     background: -webkit-linear-gradient(to right, #F09819, #FF512F);  /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to right, #F09819, #FF512F); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     color: #000 !important;
-    padding: 10px;
+    padding: 0px;
 }
 
 .navbar{
     width: 100%;
     margin: 0 auto;
+    margin-bottom: 0px !important;
+    text-align: center;
 }
 
 .navbar a{
@@ -37,8 +50,9 @@ body{
 }
 
 .contenedor img.icon {
+    margin-bottom: 12px;
+    margin-top: 5px;
     width: 280px;
-    margin-top: -10px;
 }
 
 .actions{
@@ -47,6 +61,7 @@ body{
 
 .contenedor .actions img{
     margin-right: 10px;
+    margin-bottom: 1000px;
     margin-left: 10px;
     width: 45px;
 }
@@ -229,6 +244,7 @@ hr{ border-top: 1px solid #fff !important; margin: 0 !important; padding: 0 !imp
 .headerProfile{
     width: 100%;
     padding: 20px;
+    margin-bottom: 10px;
 }
 
 .profileDesc{
@@ -237,6 +253,11 @@ hr{ border-top: 1px solid #fff !important; margin: 0 !important; padding: 0 !imp
     height: 100%;
     display: inline-block;
     margin-left: 0px;
+}
+
+.profileDesc p{
+    font-size: 20px !important;
+    font-weight: medium;
 }
 
 .profileImg{
@@ -248,8 +269,9 @@ hr{ border-top: 1px solid #fff !important; margin: 0 !important; padding: 0 !imp
 
 .profileImg img{
     width: 90px;
+    height: 90px;
     border: 1px solid #ccc;
-    border-radius: 20px;
+    border-radius: 50px;
 }
 
 .profileInfoFollow{
@@ -307,7 +329,7 @@ hr{ border-top: 1px solid #fff !important; margin: 0 !important; padding: 0 !imp
     border-right: none;
 }
 
-.searchHeader{
+.searchContent > .searchHeader{
     padding: 20px;
 }
 
@@ -328,9 +350,10 @@ hr{ border-top: 1px solid #fff !important; margin: 0 !important; padding: 0 !imp
 .imageProfileSearch, .imageProfileSearch img{
     display: inline-block;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 50px;
     margin-right: 20px;
     width: 60px;
+    height: 60px;
 }
 
 .describeProfileSearch{
@@ -351,4 +374,140 @@ hr{ border-top: 1px solid #fff !important; margin: 0 !important; padding: 0 !imp
 
 .searchBodyNone{
     text-align: center;
+}
+
+.uploadImageDiv p{
+    text-align: center;
+}
+
+.uploadImageDiv p span{
+    background: #42af42;
+    padding: 5px;
+    border-radius: 14px;
+    text-align: center;
+}
+
+.followSearhBtn{
+    color: black !important;
+}
+
+.btnFollowSearch{
+    width: 100%;
+    padding: 7px !important;
+    color: black !important;
+}
+
+.publicationHeader{
+    width: 100%;
+    padding: 10px;
+    background: #0a0500;
+    color: #fff;
+    /*background: linear-gradient(to right, #fdc830, #f37335);
+    background: linear-gradient(to right, #F09819, #FF512F); 
+    background: linear-gradient(to right, #8e2de2, #4a00e0); */
+    margin-bottom: -1px;
+    text-align: center;
+}
+
+.parseRoute{
+    width: 30%;
+    margin:0 auto;
+    display: inline-block;
+}
+
+.glyphicon-cog{
+    float: left;
+}
+
+.glyphicon-fullscreen{
+    float: right;
+}
+
+.publicationHeader .glyphicon-chevron-right{
+    float:right;
+    cursor: pointer;
+}
+
+.publicationFooter{
+    width: 100%;
+    padding: 7px;
+    background: #0a0500;
+    color: #fff;
+    /*background: linear-gradient(to right, #fdc830, #f37335);
+    background: linear-gradient(to right, #F09819, #FF512F); 
+    background: linear-gradient(to right, #8e2de2, #4a00e0); */
+    text-align: center;
+}
+
+.publicationHeader .glyphicon-chevron-left{
+    float: left;
+    cursor: pointer;
+}
+
+canvas{
+    width: 100% !important;
+    height: 350px !important;
+    position: relative !important;
+    border-bottom: 2px solid #000;
+}
+
+.mapboxgl-ctrl-bottom-right{
+    display: none; 
+}
+
+.publication{
+    border: 1px solid #0a0500 !important;
+    margin-bottom: -10px;
+}
+
+.publicationBody{
+    padding: 20px;
+    background: #fff;
+    color: #000;
+}
+
+.publicationBody .interactions .glyphicon-play, .publicationBody .interactions .glyphicon-info-sign{
+    float: right;
+}
+
+.dificult{
+    width: 100%;
+}
+
+.dificult .dificultDiv .slider{
+    cursor: pointer;
+    background: linear-gradient(to right, #1e9600, #fff200, #ff0000);
+    border-radius: 25px;
+    height: 8px;
+}
+
+.slider::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background: #000;
+    cursor: pointer;
+}
+
+.slider::-moz-range-track {
+    width: 0;
+}
+
+.publicationBody hr{
+    border: 1px solid #aaa;
+    margin-top: 14px !important;
+}
+
+.comments{
+    overflow:hidden;
+    position: relative;
+    height:100px;
+}
+
+.showAllComments{
+    cursor: pointer;
+    border: 1px solid #aaa;
+    padding: 2px;
+    margin-top: 10px;
+    text-align: center;
+    clear: both;
 }

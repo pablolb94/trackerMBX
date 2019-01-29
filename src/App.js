@@ -10,18 +10,21 @@ import 'react-s-alert/dist/s-alert-css-effects/genie.css';
 import Alert from 'react-s-alert';
 
 import Header from './components/Header';
-import Home from './components/Home.js';
 import Login from './components/Login';
 import Logout from './components/Logout';
 import NoMatch from './components/404.js';
 import LogUp from './components/LogUp.js';
-import Profile from './components/Profile.js';
-import Search from './components/Search.js';
-import Notifications from './components/Notifications.js';
-import ConfigProfile from './components/ConfigProfile.js';
+
+//PAGES
+import Home from './pages/Home.js';
+import Notifications from './pages/Notifications.js';
+import Search from './pages/Search.js';
+import Profile from './pages/Profile.js';
+import ConfigProfile from './pages/ConfigProfile.js';
 
 let history = createHashHistory();
 
+//FUNCION PARA RESTRINGIR PAGINAS QUE REQUIEREN DE LOGIN
 function AuthenticatedRoute({component: Component, authenticated, ...rest}) {
   return (
     <Route
@@ -35,19 +38,21 @@ function AuthenticatedRoute({component: Component, authenticated, ...rest}) {
 class App extends Component {
   constructor() {
     super();
-    this.setCurrentUser = this.setCurrentUser.bind(this);
-    this.addAccount = this.addAccount.bind(this);
-    this.updateStateAll = this.updateStateAll.bind(this);
+    this.setCurrentUser = this.setCurrentUser.bind(this); //METODO PARA ACTUALIZAR DATOS DE LA SESION.
+    this.addAccount = this.addAccount.bind(this);         //METODO PARA CREAR CUENTA.
+    this.updateStateAll = this.updateStateAll.bind(this); //
+    this.updateFollow = this.updateFollow.bind(this);     //METODO PARA ACTUALIZAR SEGUIDORES.
+    this.udateImageProfile = this.udateImageProfile.bind(this);     //METODO PARA ACTUALIZAR FOTO DE PERFIL.
     this.state = {
-      authenticated: false,
-      currentUser: null,
-      loading: true,
-      accounts: {},
-      username: "",
-      account: ""
+      authenticated: false,   //VARIABLE QUE DEFINE SI ESTA LOGEADO O NO.
+      currentUser: null,      //USUARIO.
+      loading: true,          //MUESTRA O OCULTA EL LOADING PAGE.
+      accounts: {},           //COLECCION DE CUENTAS.
+      account: ""             //CUENTA CON LA QUE ESTA LOGUEADO.
     };
   }
 
+  //METODOS PARA CONECTAR CON LA BD.
   componentWillMount() {
     this.removeAuthListener = app.auth().onAuthStateChanged((user) => {
       if (user) {
@@ -75,21 +80,13 @@ class App extends Component {
       this.setState({ accounts });
       if(this.state.currentUser){
         if(this.state.currentUser.uid == snap.val().id){
-          this.setState({ username: snap.val().username, account:snap.val(), loading: false });
+          this.setState({account:snap.val(), loading: false });
         }
       }
     })
   }
 
-  addAccount(account) {
-    const accounts = {...this.state.accounts};
-    this.db.push().set(account);
-  }
-
-  updateStateAll(accounts, account){
-    this.setState({account, accounts});
-  }
-
+  
   setCurrentUser(user) {
     if (user) {
       var account = new Object;
@@ -105,23 +102,106 @@ class App extends Component {
         currentUser: user,
         authenticated: true,
         account: account,
-        username: account.username
       })
     } else {
       this.setState({
         currentUser: null,
         authenticated: false,
-        username: ""
+        account: ""
       })
     }
   }
 
+  addAccount(account) {
+    const accounts = {...this.state.accounts};
+    this.db.push().set(account);
+  }
+
+  updateStateAll(accounts, account){
+    this.setState({account, accounts});
+  }
+
+  updateFollow(accountId, addFollow) {
+    var db = app.database();
+    var accounts = this.state.accounts;
+    var account = this.state.account;
+    var keyLocal = "";
+    if(addFollow){  //COMENZAR A SEGUIR
+      for (var key in accounts) {
+        if (accounts.hasOwnProperty(key)) {
+          if(accounts[key].id == account.id){
+            keyLocal = key;
+          }
+          if(accounts[key].id == accountId){
+            if(accounts[key].followers){
+              accounts[key].followers.push(account.id)
+            }else{
+              var arr = new Array();
+              arr.push(account.id);
+              accounts[key].followers = arr;
+            }
+            db.ref("accounts/"+key+"/followers").set(accounts[key].followers);
+          }
+        }
+      }
+      if(account.following){
+        account.following.push(accountId);
+      }else{
+        var arr = new Array();
+        arr.push(accountId);
+        account.following = arr;
+      }
+      db.ref("accounts/"+keyLocal+"/following").set(account.following);
+      this.setState({accounts, account})
+    }else{          //DEJAR DE SEGUIR
+      //ELIMINA SEGUIDOR DEL USUARIO
+      for (var key in accounts) {
+        if (accounts.hasOwnProperty(key)) {
+          if(accounts[key].id == account.id){
+            keyLocal = key;
+          }
+          if(accounts[key].id == accountId){
+            var memory = 0;
+            accounts[key].followers.forEach(element => {
+              if(element == account.id){
+                accounts[key].followers.splice(memory, 1);
+                db.ref("accounts/"+key+"/followers").set(accounts[key].followers);
+              }
+              memory ++;
+            });
+          }
+        }
+      }
+      //ELIMINA SIGUIENDO DEL USUARIO LOGUEADO
+      var memory = 0;
+      account.following.forEach(element => {
+        if(element == accountId){
+          account.following.splice( memory , 1);
+          db.ref("accounts/"+keyLocal+"/following").set(account.following);
+        }
+        memory++;
+      });
+      
+      //ACTUALIZA LAS PROPIEDADES.
+      this.setState({accounts, account})
+    }
+  }
+
+  udateImageProfile(accountKey, imageB64){
+    var accounts = this.state.accounts;
+    var account = this.state.account;
+    var db = app.database();
+    db.ref("accounts/"+accountKey+"/image").set(imageB64);
+    account.image = imageB64;
+    accounts[accountKey].image = imageB64;
+    this.setState({ account, accounts});
+  }
 
   render() {
     if (this.state.loading === true) {
       return (
         <div className="LoadingDiv">
-          <img src="images/loading.gif" />
+          <img src="images/nav-ico.PNG" />
         </div>
       )
     }
@@ -133,7 +213,6 @@ class App extends Component {
             <Header 
               authenticated={this.state.authenticated} 
               currentUser={this.state.currentUser} 
-              username={this.state.username}
             />
             <Switch>
               <AuthenticatedRoute
@@ -147,44 +226,41 @@ class App extends Component {
                 path="/home"
                 authenticated={this.state.authenticated}
                 component={Home}
-                username={this.state.username}
+                account={this.state.account}
               />
               <AuthenticatedRoute
                 exact
                 path="/search"
                 authenticated={this.state.authenticated}
                 component={Search}
-                user={this.state.currentUser}
-                username={this.state.username}
                 account={this.state.account}
                 accounts={this.state.accounts}
+                updateFollow={this.updateFollow}
               />
               <AuthenticatedRoute
                 exact
                 path="/Profile/:username"
                 authenticated={this.state.authenticated}
                 component={Profile}
-                user={this.state.currentUser}
                 accounts={this.state.accounts}
                 account={this.state.account}
-                username={this.state.username}
-                updateStateAll={this.updateStateAll}
+                updateFollow={this.updateFollow}
               />
               <AuthenticatedRoute
                 exact
                 path="/Notifications"
                 authenticated={this.state.authenticated}
                 component={Notifications}
-                user={this.state.currentUser}
-                username={this.state.username}
               />
               <AuthenticatedRoute
                 exact
                 path="/Configprofile"
                 authenticated={this.state.authenticated}
                 component={ConfigProfile}
+                accounts={this.state.accounts}
+                account={this.state.account}
                 user={this.state.currentUser}
-                username={this.state.username}
+                udateImageProfile={this.udateImageProfile}
               />
               <Route path="/logout" component={Logout} />
               <Route path="/login" render={(props) => {
