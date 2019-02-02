@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import HeaderProfileOwn from "./../components/profile/HeaderProfileOwn.js";
 import HeaderProfile from "./../components/profile/HeaderProfile.js";
 import Followers from '../components/profile/Followers';
+import PublicationProfile from '../components/publication/PublicationProfile.js';
 import SimpleExample from '../components/testMap.js';
 
 class Profile extends Component {
@@ -22,6 +23,18 @@ class Profile extends Component {
         }
     }
 
+    var data = this.props.tracks[0];
+
+    var tracks=new Array();
+    for (var key in this.props.tracks) {
+        if (this.props.tracks.hasOwnProperty(key)) {
+            if(account.id  == this.props.tracks[key].owner){
+                tracks.push(this.props.tracks[key])
+            }
+        }
+    }
+    console.log(tracks)
+
     return (
         <div className="profileDiv">
             {
@@ -32,12 +45,15 @@ class Profile extends Component {
             }
             {
                 this.props.match.params.username == this.props.account.username ?
-                    (<Followers account={this.props.account} />)
+                    (<Followers account={this.props.account} tracks={this.props.tracks} />)
                 :
-                    (<Followers account={account} />)
-            }  
-            
-            <SimpleExample />
+                    (<Followers account={account} tracks={this.props.tracks} />)
+            }
+            {
+                Object.keys(tracks).map(function(key, e, i) {
+                    return (<PublicationProfile track={tracks[key]} account={account} />)
+                })
+            }
 
             <div className="bottomMenu">
                 <Link to="/home">

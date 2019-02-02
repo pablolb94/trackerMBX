@@ -401,12 +401,17 @@ hr{ border-top: 1px solid #fff !important; margin: 0 !important; padding: 0 !imp
     width: 100%;
     padding: 10px;
     background: #0a0500;
-    color: #fff;
+    background: #FF512F;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #F09819, #FF512F);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #F09819, #FF512F);
+    color: #000;
     /*background: linear-gradient(to right, #fdc830, #f37335);
     background: linear-gradient(to right, #F09819, #FF512F); 
     background: linear-gradient(to right, #8e2de2, #4a00e0); */
     margin-bottom: -1px;
     text-align: center;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
 }
 
 .parseRoute{
@@ -432,11 +437,16 @@ hr{ border-top: 1px solid #fff !important; margin: 0 !important; padding: 0 !imp
     width: 100%;
     padding: 7px;
     background: #0a0500;
-    color: #fff;
+    background: #FF512F;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #F09819, #FF512F);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #F09819, #FF512F);
+    color: #000;
     /*background: linear-gradient(to right, #fdc830, #f37335);
     background: linear-gradient(to right, #F09819, #FF512F); 
     background: linear-gradient(to right, #8e2de2, #4a00e0); */
     text-align: center;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
 }
 
 .publicationHeader .glyphicon-chevron-left{
@@ -446,7 +456,7 @@ hr{ border-top: 1px solid #fff !important; margin: 0 !important; padding: 0 !imp
 
 canvas{
     width: 100% !important;
-    height: 350px !important;
+    height:200px !important;
     position: relative !important;
     border-bottom: 2px solid #000;
 }
@@ -455,14 +465,10 @@ canvas{
     display: none; 
 }
 
-.publication{
-    border: 1px solid #0a0500 !important;
-    margin-bottom: -10px;
-}
-
 .publicationBody{
     padding: 20px;
-    background: #fff;
+    margin-top: -3px;
+    background: #eee;
     color: #000;
 }
 
@@ -510,4 +516,69 @@ canvas{
     margin-top: 10px;
     text-align: center;
     clear: both;
+}
+
+#addingRoute{
+    position: fixed;
+    bottom: 60px;
+    width: 100%;
+    text-align: center;
+    z-index: 100;
+}
+
+
+.infoDiv{
+    padding: 20px;
+    padding-bottom: 0px;
+}
+
+.controlsMenu{
+    font-size: 20px;
+    padding: 10px;
+    background: #FF512F;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #F09819, #FF512F);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #F09819, #FF512F);
+    text-align: center;
+    border-radius: 25px;
+    margin: 0 auto;
+    width: 210px;
+    cursor: pointer;
+    border:1px solid #000;
+    color: #000;
+    bottom: 60px;
+}
+
+.controlsMenu span{
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 10px;
+}
+
+.statusRect{
+    padding: 5px;
+    margin: 20px;
+}
+
+.statusRect span{
+    color: green;
+    padding: 5px;
+    border-radius: 15px;
+}
+
+.noResults{
+    padding: 20px;
+    text-align: center;
+}
+
+.publicationDiv{
+    border-radius: 15px;
+}
+
+.publicationContent{
+    padding: 10px !important;
+}
+
+.publicationBody .interactions .glyphicon-comment{
+    
 }

@@ -45,5 +45,19 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
     <script type="text/javascript" src="cordova.js"></script>
+    <script>
+      var prevScrollpos = window.pageYOffset;
+      window.onscroll = function() {
+      var currentScrollPos = window.pageYOffset;
+        if (prevScrollpos > currentScrollPos) {
+          //document.getElementById("addingRoute").style.bottom = "60px";
+          $("#addingRoute").slideDown();
+        } else {
+          //document.getElementById("addingRoute").style.bottom = "-50px";
+          $("#addingRoute").slideUp();
+        }
+        prevScrollpos = currentScrollPos;
+      }
+    </script>
   </body>
 </html>

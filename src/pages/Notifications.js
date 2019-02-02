@@ -6,7 +6,7 @@ class Notifications extends Component {
     super(props)
     this.state = {
       user: this.props.user,
-      userMail: this.props.user.email,
+      userMail: "",
       userName: this.props.username
     }
   }

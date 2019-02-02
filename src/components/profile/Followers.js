@@ -8,11 +8,20 @@ class Followers extends Component {
 
   render() {
     var account = this.props.account;
+    var tracks = this.props.tracks;
+    var cont = 0;
+    for (var key in tracks) {
+        if (tracks.hasOwnProperty(key)) {
+            if(tracks[key].owner == account.id){
+                cont++;
+            }
+        }
+    }
     return (
         <div className="profileInfoFollow">
             <div>
                 <span className="low">Rutas:<br/></span>
-                <span className="big">12 {account.tracks}</span>
+                <span className="big">{cont}</span>
             </div>
             <div>
                 <span className="low">Seguidores:<br/></span>

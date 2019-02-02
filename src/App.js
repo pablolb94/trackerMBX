@@ -48,7 +48,10 @@ class App extends Component {
       currentUser: null,      //USUARIO.
       loading: true,          //MUESTRA O OCULTA EL LOADING PAGE.
       accounts: {},           //COLECCION DE CUENTAS.
-      account: ""             //CUENTA CON LA QUE ESTA LOGUEADO.
+      tracks: [],           //COLECCION DE RUTAS.
+      account: "",            //CUENTA CON LA QUE ESTA LOGUEADO.
+      rec: "off",
+      coordinates: false
     };
   }
 
@@ -83,6 +86,16 @@ class App extends Component {
           this.setState({account:snap.val(), loading: false });
         }
       }
+    })
+
+    var db2 = app.database().ref().child('tracks');
+    const { tracks } = this.state;
+    var cont = 0;
+    db2.on('child_added', snap => {
+      var entry = snap.val();
+      tracks[cont] = (entry);
+      this.setState({ tracks });
+      cont ++;
     })
   }
 
@@ -197,6 +210,83 @@ class App extends Component {
     this.setState({ account, accounts});
   }
 
+  //CONFIGURACION CONTROLES DE GRABACION
+  changeRecStatus(recStatus){
+    var recStatusOld = this.state.rec;
+    this.setState({rec: recStatus});
+    if(recStatus=="on"){
+      this.recOn(recStatusOld);
+    }
+    else if(recStatus=="pause"){
+      this.recPause();
+    }
+    else if(recStatus=="upload"){
+      this.recUpload();
+    }
+    else if(recStatus=="off"){
+      this.recStop();
+    }
+  }
+
+  recOn(recStatusOld){
+    var setState = this.setState;
+    var memory2 = this;
+    if(recStatusOld == "pause"){
+      var coordinates = this.state.coordinates;
+    }else{
+      var coordinates = [];
+    }
+    var onSuccess = function(position) {
+      var memory = [position.coords.longitude, position.coords.latitude]
+      coordinates.push(memory);
+    };
+
+    this.setState({refreshIntervalId: setInterval(function() {
+      navigator.geolocation.getCurrentPosition(onSuccess);
+      memory2.setState({coordinates})
+    }, 10000)})
+  }
+
+  recPause(){
+    clearInterval(this.state.refreshIntervalId);
+  }
+
+  recStop(){
+    clearInterval(this.state.refreshIntervalId);
+  }
+
+  recUpload(){
+    var db = app.database().ref().child('tracks');
+    var track = {
+      owner: this.state.account.id,
+      date: Date.now(),
+      type: "FeatureCollection",
+      "features": [
+        { 
+          "type": "Feature",
+          "geometry": {
+            "type": "LineString",
+            'coordinates':this.state.coordinates
+          }
+        },
+      ]
+    };
+
+    if(!this.state.coordinates){
+      Alert.error("La ruta está vacía.", {
+        position: 'top',
+        effect: 'genie',
+      });
+
+    }else{
+      db.push().set(track);
+      Alert.success("Ruta almacenada con éxito.", {
+        position: 'top',
+        effect: 'genie',
+      });
+    }
+  }
+
   render() {
     if (this.state.loading === true) {
       return (
@@ -214,6 +304,32 @@ class App extends Component {
               authenticated={this.state.authenticated} 
               currentUser={this.state.currentUser} 
             />
+
+            {
+              window.cordova?
+              (
+                this.state.currentUser?
+                (
+                  <div id="addingRoute">
+                    <div className="controlsMenu">
+                        {
+                          this.state.rec =="on"?
+                            (<span className="glyphicon glyphicon-pause"  onClick={evt => this.changeRecStatus("pause")}></span>)
+                          :
+                            (<span className="glyphicon glyphicon-play" onClick={evt => this.changeRecStatus("on")}></span>)
+
+                        }
+                        <span className="glyphicon glyphicon-stop" onClick={evt => this.changeRecStatus("off")}></span> 
+                        <span className="glyphicon glyphicon-upload" onClick={evt => this.changeRecStatus("upload")}></span> 
+                        
+                    </div>
+                  </div>
+                )
+                :
+                ("")
+              ):
+              ("")
+            }
             <Switch>
               <AuthenticatedRoute
                 exact
@@ -245,6 +361,7 @@ class App extends Component {
                 accounts={this.state.accounts}
                 account={this.state.account}
                 updateFollow={this.updateFollow}
+                tracks={this.state.tracks}
               />
               <AuthenticatedRoute
                 exact
@@ -262,6 +379,7 @@ class App extends Component {
                 user={this.state.currentUser}
                 udateImageProfile={this.udateImageProfile}
               />
+
               <Route path="/logout" component={Logout} />
               <Route path="/login" render={(props) => {
                 return <Login redirect={this.state.currentUser} setCurrentUser={this.setCurrentUser} {...props} />
