@@ -40,10 +40,12 @@ class PublicationProfile extends Component {
 
       map.jumpTo({ 'center': coordinates[0], 'zoom': 16 });
       map.setPitch(30);
+      /*
       map['scrollZoom'].disable();
       map['boxZoom'].disable();
       map['dragRotate'].disable();
       map['dragPan'].disable();
+      */
     });
     
   }
@@ -60,8 +62,7 @@ class PublicationProfile extends Component {
         });
     }
 
-    
-
+    var thisMem = this;
 
     return (
         <div className="publicationContent">
@@ -70,7 +71,7 @@ class PublicationProfile extends Component {
                 <div className="parseRoute">
                     
                 </div>
-                <span class="glyphicon glyphicon-cog"></span>
+                <span class="glyphicon glyphicon-cog" onClick={function(){thisMem.props.updateIdRouteCRUD(thisMem.props.track.snapKey);}} data-toggle="modal" data-target="#delRouteModal"></span>
                 <span class="glyphicon glyphicon-fullscreen"></span>
             </div>
             <div ref={el => this.mapContainer = el} className="map" />

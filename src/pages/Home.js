@@ -8,17 +8,8 @@ class Home extends Component {
 
   render() {
     var text = "nada";
-    navigator.geolocation.getCurrentPosition(function() {
-        console.log("Succesfully retreived our GPS position, we can now start our background tracker.");
-    }, function(error) {
-        console.error(error);
-    });
     if(window.cordova){
-        var text = "cordova";
-    }
-    else{
-        var text = "no cordova";
-
+        text = "cordova";
     }
     return (
       <div className="homeDiv">

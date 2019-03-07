@@ -422,6 +422,7 @@ hr{ border-top: 1px solid #fff !important; margin: 0 !important; padding: 0 !imp
 
 .glyphicon-cog{
     float: left;
+    cursor: pointer;
 }
 
 .glyphicon-fullscreen{
@@ -520,10 +521,11 @@ canvas{
 
 #addingRoute{
     position: fixed;
-    bottom: 60px;
+    bottom: 50px;
     width: 100%;
     text-align: center;
     z-index: 100;
+    padding: 0;
 }
 
 
@@ -534,18 +536,14 @@ canvas{
 
 .controlsMenu{
     font-size: 20px;
-    padding: 10px;
     background: #FF512F;  /* fallback for old browsers */
     background: -webkit-linear-gradient(to right, #F09819, #FF512F);  /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to right, #F09819, #FF512F);
+    background: #222;
     text-align: center;
-    border-radius: 25px;
     margin: 0 auto;
-    width: 210px;
-    cursor: pointer;
-    border:1px solid #000;
-    color: #000;
-    bottom: 60px;
+    width: 100%;
+    color: #EEE;
 }
 
 .controlsMenu span{
@@ -553,6 +551,12 @@ canvas{
     margin-left: 10px;
     margin-right: 10px;
     padding: 10px;
+    cursor: pointer;
+    
+}
+
+.glyphicon-record{
+    animation: myfirst 2s 9999;
 }
 
 .statusRect{
@@ -579,6 +583,11 @@ canvas{
     padding: 10px !important;
 }
 
-.publicationBody .interactions .glyphicon-comment{
-    
+@keyframes myfirst
+{
+    0%      {color:#EEE;}
+    25%     {color:green;}
+    50%     {color:#EEE;}
+    75%     {color:green;}
+    100%    {color:#EEE;}
 }

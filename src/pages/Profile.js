@@ -9,7 +9,17 @@ import SimpleExample from '../components/testMap.js';
 
 class Profile extends Component {
   constructor(props) {
-    super(props)
+    super(props);
+    this.updateIdRouteCRUD = this.updateIdRouteCRUD.bind(this);
+    this.state = {
+        idRoute: "0"
+    }
+  }
+
+  updateIdRouteCRUD(idRoute){
+    this.setState({
+        idRoute: idRoute,
+    })
   }
 
   render() {
@@ -29,14 +39,35 @@ class Profile extends Component {
     for (var key in this.props.tracks) {
         if (this.props.tracks.hasOwnProperty(key)) {
             if(account.id  == this.props.tracks[key].owner){
-                tracks.push(this.props.tracks[key])
+                var trackMem = this.props.tracks[key];
+                tracks.push(trackMem)
             }
         }
     }
-    console.log(tracks)
+
+    var thisMem = this;
 
     return (
         <div className="profileDiv">
+            <div class="modal fade" id="delRouteModal" role="dialog">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Eliminar Ruta</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Seguro que deseas eliminar esta ruta?.</p>
+                        <p>{thisMem.state.idRoute}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="button" onClick={function(){thisMem.props.deleteTrack(thisMem.state.idRoute)}} class="btn btn-danger" data-dismiss="modal">Eliminar</button>
+                    </div>
+                </div>
+                
+                </div>
+            </div>
             {
                 this.props.match.params.username == this.props.account.username ?
                     (<HeaderProfileOwn account={this.props.account} />)
@@ -51,7 +82,7 @@ class Profile extends Component {
             }
             {
                 Object.keys(tracks).map(function(key, e, i) {
-                    return (<PublicationProfile track={tracks[key]} account={account} />)
+                    return (<PublicationProfile track={tracks[key]} account={account} updateIdRouteCRUD={thisMem.updateIdRouteCRUD} />)
                 })
             }
 

@@ -43,6 +43,7 @@ class App extends Component {
     this.updateStateAll = this.updateStateAll.bind(this); //
     this.updateFollow = this.updateFollow.bind(this);     //METODO PARA ACTUALIZAR SEGUIDORES.
     this.udateImageProfile = this.udateImageProfile.bind(this);     //METODO PARA ACTUALIZAR FOTO DE PERFIL.
+    this.deleteTrack = this.deleteTrack.bind(this);
     this.state = {
       authenticated: false,   //VARIABLE QUE DEFINE SI ESTA LOGEADO O NO.
       currentUser: null,      //USUARIO.
@@ -94,9 +95,11 @@ class App extends Component {
     db2.on('child_added', snap => {
       var entry = snap.val();
       tracks[cont] = (entry);
+      tracks[cont].snapKey = snap.key;
       this.setState({ tracks });
       cont ++;
     })
+    //window.BackgroundGeolocation.start();
   }
 
   
@@ -107,7 +110,6 @@ class App extends Component {
         if (this.state.accounts.hasOwnProperty(key)) {
           if(user.uid == this.state.accounts[key].id){
             account = this.state.accounts[key];
-            //console.log(this.state)
           }
         }
       }
@@ -229,6 +231,8 @@ class App extends Component {
   }
 
   recOn(recStatusOld){
+    window.BackgroundGeolocation.start();
+    var bgGeo = window.BackgroundGeolocation;
     var setState = this.setState;
     var memory2 = this;
     if(recStatusOld == "pause"){
@@ -236,23 +240,28 @@ class App extends Component {
     }else{
       var coordinates = [];
     }
-    var onSuccess = function(position) {
-      var memory = [position.coords.longitude, position.coords.latitude]
+
+    function success(location){
+      var memoryLocation = location.latitude+", "+location.longitude;
+      //alert(memoryLocation);
+      var memory = [location.longitude, location.latitude]
       coordinates.push(memory);
+      memory2.setState({coordinates})
     };
 
     this.setState({refreshIntervalId: setInterval(function() {
-      navigator.geolocation.getCurrentPosition(onSuccess);
-      memory2.setState({coordinates})
-    }, 10000)})
+      window.BackgroundGeolocation.getCurrentLocation(success);
+    }, 5000)})
   }
 
   recPause(){
     clearInterval(this.state.refreshIntervalId);
+    window.BackgroundGeolocation.stop();
   }
 
   recStop(){
     clearInterval(this.state.refreshIntervalId);
+    window.BackgroundGeolocation.stop();
   }
 
   recUpload(){
@@ -272,7 +281,7 @@ class App extends Component {
       ]
     };
 
-    if(!this.state.coordinates){
+    if(!this.state.coordinates || this.state.coordinates.length==0){
       Alert.error("La ruta está vacía.", {
         position: 'top',
         effect: 'genie',
@@ -285,6 +294,28 @@ class App extends Component {
         effect: 'genie',
       });
     }
+    var coordinates = [];
+    this.setState({coordinates})
+    window.BackgroundGeolocation.stop();
+  }
+
+  deleteTrack(key){
+    var thisMem = this;
+    var ref = app.database().ref("tracks/" + key)
+    ref.once('value', function (snapshot) {
+        if (snapshot === null) {
+        } else {
+          //snapshot.ref.remove();
+        }
+    })
+    var tracks = this.state.tracks;
+    var tracksNew= new Array();
+    tracks.forEach(element => {
+      if(key != element.snapKey){
+        tracksNew.push(element);
+      }
+    });
+    this.setState({tracks: tracksNew})
   }
 
   render() {
@@ -312,8 +343,15 @@ class App extends Component {
                 (
                   <div id="addingRoute">
                     <div className="controlsMenu">
+                        
                         {
-                          this.state.rec =="on"?
+                          this.state.rec == "on"?
+                          (<span className="glyphicon glyphicon-record"></span>)
+                          :
+                          ("")
+                        }
+                        {
+                          this.state.rec == "on"?
                             (<span className="glyphicon glyphicon-pause"  onClick={evt => this.changeRecStatus("pause")}></span>)
                           :
                             (<span className="glyphicon glyphicon-play" onClick={evt => this.changeRecStatus("on")}></span>)
@@ -362,6 +400,7 @@ class App extends Component {
                 account={this.state.account}
                 updateFollow={this.updateFollow}
                 tracks={this.state.tracks}
+                deleteTrack={this.deleteTrack}
               />
               <AuthenticatedRoute
                 exact
